@@ -33,4 +33,29 @@ public class HelloController {
     }
 
     public record CalculationResult(int a, int b, int sum, int difference, int product) { }
+    @GetMapping("/wordcount")
+    public WordCountResult wordCount(@RequestParam(defaultValue = "Hello Spring Boot") String text) {
+        String trimmed = text.trim();
+        int charCount = trimmed.length();
+
+        if (trimmed.isEmpty()) {
+            return new WordCountResult(text, 0, 0, "");
+        }
+
+        String[] words = trimmed.split("\\s+");
+        int wordCount = words.length;
+
+        String longestWord = "";
+        for (String word : words) {
+            // Очищаем от возможных знаков препинания для честной длины
+            String cleanWord = word.replaceAll("[^a-zA-ZА-Яа-я0-9]", "");
+            if (cleanWord.length() > longestWord.length()) {
+                longestWord = cleanWord;
+            }
+        }
+
+        return new WordCountResult(text, wordCount, charCount, longestWord);
+    }
+
+    public record WordCountResult(String originalText, int wordCount, int charCount, String longestWord) { }
 }

@@ -26,10 +26,8 @@ public class BookRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> find(@PathVariable long id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Book find(@PathVariable long id) {
+        return service.getById(id);
     }
 
     @PostMapping
@@ -55,7 +53,7 @@ public class BookRestController {
         return ResponseEntity.notFound().build();
     }
 
-    // Вариант 7: Массовое создание книг
+    // Variant 7: bulk creation of books
     @PostMapping("/bulk")
     public ResponseEntity<List<Book>> createBulk(@RequestBody List<Book> books) {
         List<Book> createdBooks = service.createBulk(books);

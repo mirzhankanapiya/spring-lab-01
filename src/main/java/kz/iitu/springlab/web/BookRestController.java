@@ -14,6 +14,7 @@ import kz.iitu.springlab.catalog.BookService;
 import kz.iitu.springlab.web.dto.BookMapper;
 import kz.iitu.springlab.web.dto.BookRequest;
 import kz.iitu.springlab.web.dto.BookResponse;
+import org.springframework.hateoas.EntityModel;                       // HATEOAS
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;   // HATEOAS
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn; // HATEOAS
 
 @Tag(name = "Books", description = "The catalogue of books")
 @RestController
@@ -55,10 +59,14 @@ public class BookRestController {
                             schema = @Schema(implementation = ProblemDetail.class)))
     })
     @GetMapping("/{id}")
-    public BookResponse find(
-            @Parameter(description = "Identifier of the book", example = "1")
-            @PathVariable long id) {
-        return mapper.toResponse(service.getById(id));
+    public EntityModel<BookResponse> find(                              // HATEOAS
+                                                                        @Parameter(description = "Identifier of the book", example = "1")
+                                                                        @PathVariable long id) {
+        BookResponse book = mapper.toResponse(service.getById(id));
+        return EntityModel.of(book,
+                linkTo(methodOn(BookRestController.class).find(id)).withSelfRel(),
+                linkTo(methodOn(BookRestController.class).list(null, 10)).withRel("books"),
+                linkTo(methodOn(BookRestController.class).list(book.author(), 10)).withRel("same-author"));
     }
 
     @Operation(summary = "Create a book")

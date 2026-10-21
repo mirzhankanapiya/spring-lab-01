@@ -26,11 +26,18 @@ public class BookService {
     public Optional<Book> findById(long id) {
         return repository.findById(id);
     }
+
     public Book getById(long id) {
         return repository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
     public Book create(Book book) {
+        boolean exists = repository.findAll().stream().anyMatch(b ->
+                b.title().equalsIgnoreCase(book.title())
+                        && b.author().equalsIgnoreCase(book.author()));
+        if (exists) {
+            throw new DuplicateTitleException(book.title(), book.author());
+        }
         return repository.save(book);
     }
 

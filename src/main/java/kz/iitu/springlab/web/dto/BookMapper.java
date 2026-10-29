@@ -1,6 +1,7 @@
 package kz.iitu.springlab.web.dto;
 
 import java.util.List;
+
 import kz.iitu.springlab.catalog.Book;
 import org.springframework.stereotype.Component;
 
@@ -8,11 +9,11 @@ import org.springframework.stereotype.Component;
 public class BookMapper {
 
     public Book toDomain(BookRequest request) {
-        return new Book(null, request.title(), request.author(), request.year());
+        return new Book(request.title(), request.genre(), request.year());
     }
 
     public BookResponse toResponse(Book book) {
-        return new BookResponse(book.id(), book.title(), book.author(), book.year());
+        return new BookResponse(book.getId(), book.getTitle(), book.getGenre(), book.getYear());
     }
 
     public List<BookResponse> toResponseList(List<Book> books) {

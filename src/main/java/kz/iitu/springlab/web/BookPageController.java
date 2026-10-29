@@ -3,6 +3,7 @@ package kz.iitu.springlab.web;
 import jakarta.validation.Valid;
 import kz.iitu.springlab.catalog.Book;
 import kz.iitu.springlab.catalog.BookService;
+import kz.iitu.springlab.catalog.Genre;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,9 +21,8 @@ public class BookPageController {
     }
 
     @GetMapping
-    public String list(@RequestParam(required = false) String author, Model model) {
-        model.addAttribute("books", service.findAll(author));
-        model.addAttribute("author", author);
+    public String list(Model model) {
+        model.addAttribute("books", service.listWithAuthors());
         model.addAttribute("title", "Catalogue");
         return "books/list";
     }
@@ -33,11 +33,13 @@ public class BookPageController {
         model.addAttribute("genres", Genre.values());
         return "books/form";
     }
+
     @GetMapping("/{id}")
     public String details(@PathVariable long id, Model model) {
-        model.addAttribute("book", service.getById(id));
+        model.addAttribute("book", service.getWithAuthor(id));
         return "books/details";
     }
+
     @PostMapping
     public String create(@Valid @ModelAttribute("form") BookForm form,
                          BindingResult binding,
@@ -49,11 +51,10 @@ public class BookPageController {
             return "books/form";
         }
 
-        Book saved = service.create(new Book(null, form.getTitle(),
-                form.getAuthor(), form.getYear()));
+        Book saved = service.create(new Book(form.getTitle(), form.getGenre(), form.getYear()));
 
         redirect.addFlashAttribute("message",
-                "Book «" + saved.title() + "» has been added");
+                "Book «" + saved.getTitle() + "» has been added");
         return "redirect:/books";
     }
 }

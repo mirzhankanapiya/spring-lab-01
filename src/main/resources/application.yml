@@ -4,16 +4,19 @@ spring:
   messages:
     fallback-to-system-locale: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/springlab
-    username: springlab
-    password: springlab
+    url: jdbc:h2:mem:txlab;DB_CLOSE_DELAY=-1;NON_KEYWORDS=YEAR
+    username: sa
+    password:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate.format_sql: true
+  h2:
+    console:
+      enabled: true
 
 server:
   port: 8080

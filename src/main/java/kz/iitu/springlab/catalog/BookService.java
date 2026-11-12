@@ -2,6 +2,7 @@ package kz.iitu.springlab.catalog;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +69,7 @@ public class BookService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')") // <--- ДОБАВЛЕНО СЮДА
     public boolean delete(long id) {
         if (!repository.existsById(id)) {
             return false;

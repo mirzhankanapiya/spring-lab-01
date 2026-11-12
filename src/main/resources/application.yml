@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: spring-lab-01
+  messages:
+    fallback-to-system-locale: false
+  datasource:
+    url: jdbc:h2:mem:txlab;DB_CLOSE_DELAY=-1;NON_KEYWORDS=YEAR
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080
+
+app:
+  owner: Meiirzhan Kanapiya
+  group: IS-2405
+  date-pattern: yyyy-MM-dd HH:mm:ss
+  repeat-count: 3
+  mail:
+    from: no-reply@iitu.kz
+    retry-count: 3
+    timeout: 5s
+    enabled: true
+  cache:
+    ttl: 10m
+    max-entries: 1000
+
+logging:
+  level:
+    web: INFO
+    kz.iitu: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,env,configprops,conditions
+  endpoint:
+    env:
+      show-values: ALWAYS
+    configprops:
+      show-values: ALWAYS

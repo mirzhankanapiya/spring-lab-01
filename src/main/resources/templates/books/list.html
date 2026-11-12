@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Catalogue</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<!-- Блок безопасности -->
+<div style="margin-bottom: 20px; padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc;">
+    <span>Logged in as: <strong sec:authentication="name">anonymous</strong></span>
+    <span>Roles: <span sec:authentication="principal.authorities">[ROLE_ANONYMOUS]</span></span>
+
+    <!-- Ссылка видна только админу -->
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}" style="margin-left: 20px;">Administration</a>
+
+    <!-- Кнопка выхода -->
+    <form th:action="@{/logout}" method="post" style="display:inline; margin-left: 20px;">
+        <button type="submit">Log out</button>
+    </form>
+</div>
+
+<h1 th:text="${title}">Catalogue</h1>
+<div th:if="${message}" th:text="${message}"></div>
+<p th:if="${message}" class="flash" th:text="${message}"></p>
+
+<!-- ВАЖНО: используем th:action для автоматической вставки CSRF-токена -->
+<form th:action="@{/books}" method="post">
+    <input name="title" placeholder="Title" required>
+    <input name="author" placeholder="Author" required>
+    <input name="year" type="number" placeholder="Year" required>
+    <button type="submit">Add</button>
+</form>
+
+<a th:href="@{/books/new}">New book</a>
+
+<table>
+    <tr><th>#</th><th>Title</th><th>Author</th><th>Year</th></tr>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.id}">1</td>
+        <td th:text="${book.title}">Title</td>
+        <td th:text="${book.author}">Author</td>
+        <td th:text="${book.year}">2020</td>
+    </tr>
+</table>
+</body>
+</html>
